@@ -271,7 +271,6 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
 
             this.bodies[bodyname_insystem] = (value, distancels)
 
-            #sorted_bodies = sorted(this.bodies, key = lambda x: x[1])
             sorted_body_names = [k
                     for k, v
                     in sorted(
@@ -281,6 +280,7 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
                     ]
 
             def format_body(body_name):
+                # template: NAME (VALUE, DIST), …
                 body_value = this.bodies[body_name][0]
                 body_distance = this.bodies[body_name][1]
                 if body_value >= this.minvalue:
@@ -291,14 +291,11 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
                 else:
                     return '%s' % (body_name)
 
-            # template: NAME (VALUE, DIST), …
             this.label['text'] = 'EC: %s' % \
                     (', '.join(
                         [format_body(b) for b in sorted_body_names]
                         )
                     )
-
-            #this.label['text'] += ' %s (%.0f Cr)' % (bodyname_insystem, format_credits(value, False))
 
         except Exception as e:
             traceback.print_exc()
