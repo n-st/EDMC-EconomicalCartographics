@@ -255,7 +255,6 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
         #>   "WasDiscovered": false,
         #>   "WasMapped": false
         #}
-        print(entry)
 
         if not 'PlanetClass' in entry:
             # That's no moon!
@@ -272,7 +271,6 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
             mass = float(entry['MassEM'])
             was_discovered = bool(entry['WasDiscovered'])
             was_mapped = bool(entry['WasMapped'])
-            print('wd', was_discovered, 'wm', was_mapped)
 
             if bodyname.startswith(starsystem + ' '):
                 bodyname_insystem = bodyname[len(starsystem + ' '):]
