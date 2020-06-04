@@ -256,7 +256,7 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
             bodyname_insystem = bodyname
 
         if bodyname_insystem in this.bodies:
-            del this.bodies[bodyname_insystem]
+            this.bodies[bodyname_insystem][0] = -1
 
         update_display()
 
@@ -273,6 +273,7 @@ def update_display():
                 this.bodies.items(),
                 key=lambda item: item[1][1] # take: value (item[1]), which is a tuple -> second of tuple ([1]), which is the distance
                 )
+            if v[1] >= 0
             ]
 
     def format_body(body_name):
