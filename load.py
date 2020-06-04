@@ -248,6 +248,18 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
             traceback.print_exc()
             print(e)
 
+    elif entry['event'] == 'SAAScanComplete':
+        bodyname = entry['BodyName']
+        if bodyname.startswith(this.starsystem + ' '):
+            bodyname_insystem = bodyname[len(this.starsystem + ' '):]
+        else:
+            bodyname_insystem = bodyname
+
+        if bodyname_insystem in this.bodies:
+            del this.bodies[bodyname_insystem]
+
+        update_display()
+
     elif entry['event'] == 'FSDJump':
         if 'StarSystem' in entry:
             this.starsystem = entry['StarSystem']
