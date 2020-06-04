@@ -37,6 +37,7 @@ this = sys.modules[__name__]	# For holding module globals
 this.label = None
 this.bodies = {}
 this.minvalue = 0
+this.starsystem = ''
 
 # Used during preferences
 this.settings = None
@@ -221,7 +222,8 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
         try:
             # If we get any key-not-in-dict errors, then this body probably
             # wasn't interesting in the first place
-            starsystem = entry['StarSystem']
+            if 'StarSystem' in entry:
+                this.starsystem = entry['StarSystem']
             bodyname = entry['BodyName']
             terraformable = bool(entry['TerraformState'])
             distancels = float(entry['DistanceFromArrivalLS'])
@@ -230,8 +232,8 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
             was_discovered = bool(entry['WasDiscovered'])
             was_mapped = bool(entry['WasMapped'])
 
-            if bodyname.startswith(starsystem + ' '):
-                bodyname_insystem = bodyname[len(starsystem + ' '):]
+            if bodyname.startswith(this.starsystem + ' '):
+                bodyname_insystem = bodyname[len(this.starsystem + ' '):]
             else:
                 bodyname_insystem = bodyname
 
@@ -247,6 +249,8 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
             print(e)
 
     elif entry['event'] == 'FSDJump':
+        if 'StarSystem' in entry:
+            this.starsystem = entry['StarSystem']
         this.bodies = {}
         update_display()
 
