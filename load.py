@@ -282,11 +282,11 @@ def update_display():
         body_distance = this.bodies[body_name][1]
         if body_value >= this.minvalue:
             return '%s (%s, %s)' % \
-                (body_name,
+                (body_name.upper(),
                 format_credits(body_value, False),
                 format_ls(body_distance, False))
         else:
-            return '%s' % (body_name)
+            return '%s' % (body_name.upper())
 
     if sorted_body_names:
         this.label['text'] = 'EC: %s' % \
