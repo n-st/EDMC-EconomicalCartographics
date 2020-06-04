@@ -271,7 +271,11 @@ def update_display():
             for k, v
             in sorted(
                 this.bodies.items(),
-                key=lambda item: item[1][1] # take: value (item[1]), which is a tuple -> second of tuple ([1]), which is the distance
+                # multi-key sorting:
+                #   use only the value from the dict (item[1]), which is a tuple (credit_value, distance)
+                #   key 1: credit_value < 0, aka "is hidden" -- False < True when sorting
+                #   key 2: distance -- ascending
+                key=lambda item: (item[1][0] < 0, item[1][1])
                 )
             if v[1] >= 0
             ]
