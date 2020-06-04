@@ -53,6 +53,7 @@ this.frame = None
 this.label = None
 this.worlds = []
 this.bodies = {}
+this.minvalue = 0
 this.edsm_session = None
 this.edsm_data = None
 
@@ -70,6 +71,8 @@ def plugin_start():
 
 def plugin_app(parent):
     # Create and display widgets
+    config.set('ec_minvalue', 300000)
+    this.minvalue = config.getint('ec_minvalue')
     this.label = tk.Label(parent, text='EC: no scans yet')
     return this.label
 
@@ -277,16 +280,23 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
                         )
                     ]
 
+            def format_body(body_name):
+                body_value = this.bodies[body_name][0]
+                body_distance = this.bodies[body_name][1]
+                if body_value >= this.minvalue:
+                    return '%s (%s, %s)' % \
+                        (body_name,
+                        format_credits(body_value, False),
+                        format_ls(body_distance, False))
+                else:
+                    return '%s' % (body_name)
+
             # template: NAME (VALUE, DIST), …
-            this.label['text'] = 'EcoCarto: %s' % \
-                (', '.join(
-                    ['%s (%s, %s)' %
-                        (b,
-                        format_credits(this.bodies[b][0], False),
-                        format_ls(this.bodies[b][1], False))
-                    for b in sorted_body_names]
-                )
-            )
+            this.label['text'] = 'EC: %s' % \
+                    (', '.join(
+                        [format_body(b) for b in sorted_body_names]
+                        )
+                    )
 
             #this.label['text'] += ' %s (%.0f Cr)' % (bodyname_insystem, format_credits(value, False))
 
