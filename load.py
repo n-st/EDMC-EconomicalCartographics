@@ -240,7 +240,11 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
             k = get_planetclass_k(planetclass, terraformable)
             value = get_body_value(k, mass, not was_discovered, not was_mapped)
 
-            this.bodies[bodyname_insystem] = (value, distancels)
+            if bodyname_insystem in this.bodies and this.bodies[bodyname_insystem][0] < 0:
+                # body exists and is hidden, preserve its "hidden" marker (value < 0)
+                this.bodies[bodyname_insystem] = (this.bodies[bodyname_insystem][0], distancels)
+            else:
+                this.bodies[bodyname_insystem] = (value, distancels)
 
             update_display()
 
@@ -256,7 +260,12 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
             bodyname_insystem = bodyname
 
         print('Hiding', bodyname_insystem)
-        this.bodies[bodyname_insystem] = (-1, this.bodies[bodyname_insystem][1])
+        if bodyname_insystem in this.bodies:
+            # body exists, only replace its value with a "hidden" marker
+            this.bodies[bodyname_insystem] = (-1, this.bodies[bodyname_insystem][1])
+        else:
+            # body does not exist, add it as "hidden" (distance will hopefully filled by Scan event later)
+            this.bodies[bodyname_insystem] = (-1, -1)
 
         update_display()
 
