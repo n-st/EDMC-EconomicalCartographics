@@ -54,7 +54,8 @@ def plugin_app(parent):
     # Create and display widgets
     config.set('ec_minvalue', 300000)
     this.minvalue = config.getint('ec_minvalue')
-    this.label = tk.Label(parent, text='EC: no scans yet')
+    this.label = tk.Label(parent)
+    update_display()
     return this.label
 
 def plugin_prefs(parent, cmdr, is_beta):
@@ -239,31 +240,7 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
 
             this.bodies[bodyname_insystem] = (value, distancels)
 
-            sorted_body_names = [k
-                    for k, v
-                    in sorted(
-                        this.bodies.items(),
-                        key=lambda item: item[1][1] # take: value (item[1]), which is a tuple -> second of tuple ([1]), which is the distance
-                        )
-                    ]
-
-            def format_body(body_name):
-                # template: NAME (VALUE, DIST), …
-                body_value = this.bodies[body_name][0]
-                body_distance = this.bodies[body_name][1]
-                if body_value >= this.minvalue:
-                    return '%s (%s, %s)' % \
-                        (body_name,
-                        format_credits(body_value, False),
-                        format_ls(body_distance, False))
-                else:
-                    return '%s' % (body_name)
-
-            this.label['text'] = 'EC: %s' % \
-                    (', '.join(
-                        [format_body(b) for b in sorted_body_names]
-                        )
-                    )
+            update_display()
 
         except Exception as e:
             traceback.print_exc()
@@ -271,5 +248,35 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
 
     elif entry['event'] == 'FSDJump':
         this.bodies = {}
+        update_display()
+
+def update_display():
+    sorted_body_names = [k
+            for k, v
+            in sorted(
+                this.bodies.items(),
+                key=lambda item: item[1][1] # take: value (item[1]), which is a tuple -> second of tuple ([1]), which is the distance
+                )
+            ]
+
+    def format_body(body_name):
+        # template: NAME (VALUE, DIST), …
+        body_value = this.bodies[body_name][0]
+        body_distance = this.bodies[body_name][1]
+        if body_value >= this.minvalue:
+            return '%s (%s, %s)' % \
+                (body_name,
+                format_credits(body_value, False),
+                format_ls(body_distance, False))
+        else:
+            return '%s' % (body_name)
+
+    if sorted_body_names:
+        this.label['text'] = 'EC: %s' % \
+                (', '.join(
+                    [format_body(b) for b in sorted_body_names]
+                    )
+                )
+    else:
         this.label['text'] = 'EC: no scans yet'
 
