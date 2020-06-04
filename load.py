@@ -86,6 +86,10 @@ def prefs_changed(cmdr, is_beta):
 
 #def get_planetclass_k(planetclass: str, terraformable: bool):
 def get_planetclass_k(planetclass, terraformable):
+    """
+        Adapted from MattG's table at https://forums.frontier.co.uk/threads/exploration-value-formulae.232000/
+        Thank you, MattG! :)
+    """
     if planetclass == 'Metal rich body':
         return 21790
     elif planetclass == 'Ammonia world':
