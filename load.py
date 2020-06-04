@@ -255,8 +255,8 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
         else:
             bodyname_insystem = bodyname
 
-        if bodyname_insystem in this.bodies:
-            this.bodies[bodyname_insystem][0] = -1
+        print('Hiding', bodyname_insystem)
+        this.bodies[bodyname_insystem] = (-1, this.bodies[bodyname_insystem][1])
 
         update_display()
 
