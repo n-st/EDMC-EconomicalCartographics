@@ -70,20 +70,7 @@ def plugin_start():
 
 def plugin_app(parent):
     # Create and display widgets
-    this.frame = tk.Frame(parent)
-    this.frame.columnconfigure(3, weight=1)
-    this.frame.bind('<<HabZoneData>>', edsm_data)	# callback when EDSM data received
-    for (name, high, low, subType) in WORLDS:
-        this.worlds.append((tk.Label(this.frame, text = name + ':'),
-                            HyperlinkLabel(this.frame, wraplength=100),	# edsm
-                            tk.Label(this.frame),	# near
-                            tk.Label(this.frame),	# dash
-                            tk.Label(this.frame),	# far
-                            tk.Label(this.frame),	# ls
-                            ))
-    this.spacer = tk.Frame(this.frame)	# Main frame can't be empty or it doesn't resize
-    this.label = tk.Label(this.frame, text='EcoCarto')
-    update_visibility()
+    this.label = tk.Label(parent, text='EC: no scans yet')
     return this.label
 
 def plugin_prefs(parent, cmdr, is_beta):
@@ -118,7 +105,6 @@ def prefs_changed(cmdr, is_beta):
     config.set('habzone', setting or SETTING_NONE)
     this.settings = None
     this.edsm_setting = None
-    update_visibility()
 
 #def get_planetclass_k(planetclass: str, terraformable: bool):
 def get_planetclass_k(planetclass, terraformable):
@@ -310,7 +296,7 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
 
     elif entry['event'] == 'FSDJump':
         this.bodies = {}
-        this.label['text'] = 'EcoCarto: no scans yet'
+        this.label['text'] = 'EC: no scans yet'
 
 def get_setting():
     setting = config.getint('habzone')
@@ -320,28 +306,4 @@ def get_setting():
         return 0	# Explicitly set by the user to display nothing
     else:
         return setting
-
-def update_visibility():
-    setting = get_setting()
-    row = 1
-    for (label, edsm, near, dash, far, ls) in this.worlds:
-        if setting & row:
-            label.grid(row = row, column = 0, sticky=tk.W)
-            edsm.grid(row = row, column = 1, sticky=tk.W, padx = (0,10))
-            near.grid(row = row, column = 2, sticky=tk.E)
-            dash.grid(row = row, column = 3, sticky=tk.E)
-            far.grid(row = row, column = 4, sticky=tk.E)
-            ls.grid(row = row, column = 5, sticky=tk.W)
-        else:
-            label.grid_remove()
-            edsm.grid_remove()
-            near.grid_remove()
-            dash.grid_remove()
-            far.grid_remove()
-            ls.grid_remove()
-        row *= 2
-    if setting:
-        this.spacer.grid_remove()
-    else:
-        this.spacer.grid(row = 0)
 
