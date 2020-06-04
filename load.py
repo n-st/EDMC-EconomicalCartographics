@@ -31,31 +31,12 @@ from l10n import Locale
 
 import traceback
 
-VERSION = '1.20'
-
-SETTING_DEFAULT = 0x0002	# Earth-like
-SETTING_EDSM    = 0x1000
-SETTING_NONE    = 0xffff
-
-WORLDS = [
-    # Type    Black-body temp range  EDSM description
-    ('Metal-Rich',      0,  1103.0, 'Metal-rich body'),
-    ('Earth-Like',    278.0, 227.0, 'Earth-like world'),
-    ('Water',         307.0, 156.0, 'Water world'),
-    ('Ammonia',       193.0, 117.0, 'Ammonia world'),
-    ('Terraformable', 315.0, 223.0, 'terraformable'),
-]
-
-LS = 300000000.0	# 1 ls in m (approx)
+VERSION = '0.8'
 
 this = sys.modules[__name__]	# For holding module globals
-this.frame = None
 this.label = None
-this.worlds = []
 this.bodies = {}
 this.minvalue = 0
-this.edsm_session = None
-this.edsm_data = None
 
 # Used during preferences
 this.settings = None
@@ -80,14 +61,8 @@ def plugin_prefs(parent, cmdr, is_beta):
     frame = nb.Frame(parent)
     nb.Label(frame, text = 'Display:').grid(row = 0, padx = 10, pady = (10,0), sticky=tk.W)
 
-    setting = get_setting()
+    setting = 0
     this.settings = []
-    row = 1
-    for (name, high, low, subType) in WORLDS:
-        var = tk.IntVar(value = (setting & row) and 1)
-        nb.Checkbutton(frame, text = name, variable = var).grid(row = row, padx = 10, pady = 2, sticky=tk.W)
-        this.settings.append(var)
-        row *= 2
 
     nb.Label(frame, text = 'Elite Dangerous Star Map:').grid(padx = 10, pady = (10,0), sticky=tk.W)
     this.edsm_setting = tk.IntVar(value = (setting & SETTING_EDSM) and 1)
@@ -304,13 +279,4 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
     elif entry['event'] == 'FSDJump':
         this.bodies = {}
         this.label['text'] = 'EC: no scans yet'
-
-def get_setting():
-    setting = config.getint('habzone')
-    if setting == 0:
-        return SETTING_DEFAULT	# Default to Earth-Like
-    elif setting == SETTING_NONE:
-        return 0	# Explicitly set by the user to display nothing
-    else:
-        return setting
 
