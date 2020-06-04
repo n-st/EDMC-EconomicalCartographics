@@ -135,43 +135,32 @@ def get_body_value(k, mass, isFirstDicoverer, isFirstMapper):
         value *= 2.6
     return int(value)
 
-def format_credits(credits, space = True):
-    if credits > 9999999:
-        # 12 MCr
-        s = '%.0f MCr' % (credits / 1000000.0)
-    elif credits > 999999:
-        # 1.3 MCr
-        s = '%.1f MCr' % (credits / 1000000.0)
-    elif credits > 999:
-        # 456 kCr
-        s = '%.0f kCr' % (credits / 1000.0)
+def format_unit(num, unit, space = True):
+    if num > 9999999:
+        # 12 Mu
+        s = '%.0f M' % (num / 1000000.0)
+    elif num > 999999:
+        # 1.3 Mu
+        s = '%.1f M' % (num / 1000000.0)
+    elif num > 999:
+        # 456 ku
+        s = '%.0f k' % (num / 1000.0)
     else:
-        # 789 Cr
-        s = '%.0f Cr' % (credits)
+        # 789 u
+        s = '%.0f ' % (num)
 
     if not space:
         s = s.replace(' ', '')
 
+    s += unit
+
     return s
+
+def format_credits(credits, space = True):
+    return format_unit(credits, 'Cr', space)
 
 def format_ls(ls, space = True):
-    if ls > 9999999:
-        # 12 Mls
-        s = '%.0f Mls' % (ls / 1000000.0)
-    elif ls > 999999:
-        # 1.3 Mls
-        s = '%.1f Mls' % (ls / 1000000.0)
-    elif ls > 999:
-        # 456 kls
-        s = '%.0f kls' % (ls / 1000.0)
-    else:
-        # 789 ls
-        s = '%.0f ls' % (ls)
-
-    if not space:
-        s = s.replace(' ', '')
-
-    return s
+    return format_unit(ls, 'ls', space)
 
 def journal_entry(cmdr, is_beta, system, station, entry, state):
 
