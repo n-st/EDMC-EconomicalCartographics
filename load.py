@@ -100,17 +100,17 @@ def get_planetclass_k(planetclass, terraformable):
         return 1656
     elif planetclass == 'Sudarsky class II gas giant' or planetclass == 'High metal content body':
         if terraformable:
-            return 100677
+            return 9654+100677
         else:
             return 9654
     elif planetclass == 'Water world' or planetclass == 'Earthlike body':
         if terraformable:
-            return 116295
+            return 64831+116295
         else:
             return 64831
     else:
         if terraformable:
-            return 93328
+            return 300+93328
         else:
             return 300
 
