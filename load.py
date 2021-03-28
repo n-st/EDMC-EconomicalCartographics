@@ -276,7 +276,7 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
         update_display()
 
 def update_display():
-    sorted_body_names = [k
+    valuable_body_names = [k
             for k, v
             in sorted(
                 this.bodies.items(),
@@ -284,9 +284,9 @@ def update_display():
                 #   use only the value from the dict (item[1]), which is a tuple (credit_value, distance)
                 #   key 1: credit_value < minvalue -- False < True when sorting, so >= minvalue will come first
                 #   key 2: distance -- ascending
-                key=lambda item: (item[1][0] < this.minvalue, item[1][1])
+                key=lambda item: item[1][1]
                 )
-            if v[1] >= 0
+            if v[0] >= this.minvalue
             ]
 
     def format_body(body_name):
@@ -299,14 +299,15 @@ def update_display():
                 format_credits(body_value, False),
                 format_ls(body_distance, False))
         else:
-            return '%s' % (body_name.upper())
+            return '%s'
 
-    if sorted_body_names:
-        this.label['text'] = 'EC: %s' % \
-                (', '.join(
-                    [format_body(b) for b in sorted_body_names]
-                    )
-                )
+    if this.bodies:
+        text = 'EC: '
+        if valuable_body_names:
+            text += ', '.join([format_body(b) for b in valuable_body_names])
+            text += ' + '
+        text += '#%d' % (len(this.bodies) - len(valuable_body_names))
+        this.label['text'] = text
     else:
         this.label['text'] = 'EC: no scans yet'
 
